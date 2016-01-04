@@ -4,6 +4,4 @@ ceci en est un autre ! #2
 
 git add .
 git commit -m "commit"
-git remote add master https://github.com/RomainDLS/WebGame.git
-git remote -v
 git push master
