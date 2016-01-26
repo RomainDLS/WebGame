@@ -599,7 +599,7 @@ class SimpleWebSocketServer2(object):
             pass
 
    def serveforever(self):
-      pdb.set_trace()
+      #pdb.set_trace()
       writers = []
       for fileno in self.listeners:
         try:
