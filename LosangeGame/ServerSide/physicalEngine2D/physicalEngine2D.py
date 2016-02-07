@@ -4,8 +4,9 @@
 #  v
 #  Y
 
-from objectClass import staticObject, dynamicObject, Object
-from mapClass import Map
+from object import staticObject, dynamicObject, Object
+from map import Map
+from shape import *
 
 class Engine(object):
 	def __init__(self, mapSizeX, mapSizeY):
@@ -13,12 +14,12 @@ class Engine(object):
 		self._objectIdCount = 0
 		self._map = Map(mapSizeX,mapSizeY)
 
-	def addNewObject(self, objectName, isStatic):
+	def addNewObject(self, objectName, isStatic, shape):
 		self._objectIdCount += 1
 		if isStatic :
-			newObject = staticObject(0,0, objectName, self._objectIdCount)
+			newObject = staticObject(0,0, objectName, self._objectIdCount, shape)
 		else : 
-			newObject = dynamicObject(0,0, objectName, self._objectIdCount)
+			newObject = dynamicObject(0,0, objectName, self._objectIdCount, shape)
 		self._objectList.append(newObject)
 		return self._objectIdCount
 
