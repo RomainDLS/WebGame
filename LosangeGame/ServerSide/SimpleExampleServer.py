@@ -1,4 +1,5 @@
 from SimpleWebSocketServer2 import WebSocket, SimpleWebSocketServer2
+from GameBuilder import Player, Game
 import ipdb, time
 import sys
 
@@ -6,22 +7,23 @@ clients = []
 addressTmp = []
 dataTmp = []
 message = ''
+game = Game()
 
 class SimpleConnexion(WebSocket):
     def handleMessage(self):
-        addressTmp.append(self.address)
-        dataTmp.append(self.data.encode('ascii', 'replace'))
-        message = "Address: %s - %d, Message: %s" % (self.address[0], self.address[1],dataTmp)
-        print(message)
-        ipdb.set_trace()
+        address = self.address
+        game.getPlayerByAddress(address[0],address[1]).angle = self.data.encode('ascii', 'replace')
 
     def handleConnected(self):
+       newPlayer = Player(self)
+       game.append(newPlayer)
        print self.address, 'connected'
        for client in clients:
           client.sendMessage(self.address[0] + u' - connected')
        clients.append(self)
 
     def handleClose(self):
+       game.remove(game.getPlayerByAddress(self.address))
        clients.remove(self)
        print self.address, 'closed'
        for client in clients:

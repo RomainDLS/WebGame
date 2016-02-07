@@ -13,7 +13,7 @@ function doConnect()
   LaunchGame();
 }
 function sendMessage(){
-  websocket.send("message");
+  websocket.send(getAngle()*90/Math.PI);
 }
 function onOpen(evt)
 {
