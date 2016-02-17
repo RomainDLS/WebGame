@@ -9,12 +9,20 @@ dataTmp = []
 message = ''
 game = Game()
 
+
 class SimpleConnexion(WebSocket):
     def handleMessage(self):
+        ipdb.set_trace()
         address = self.address
-        game.getPlayerByAddress(address[0],address[1]).angle = self.data.encode('ascii', 'replace')
+        player = game.getPlayerByAddress(address[0],address[1])
+        message = self.data.encode('ascii', 'replace').split('//')
+        if message[0] == 'angle' :
+          player.angle = message[1]
+        if message[0] == 'connected' :
+          print self.address, 'connected'
 
     def handleConnected(self):
+       #ipdb.set_trace()
        newPlayer = Player(self)
        game.append(newPlayer)
        print self.address, 'connected'
@@ -29,19 +37,15 @@ class SimpleConnexion(WebSocket):
        for client in clients:
           client.sendMessage(self.address[0] + u' - disconnected')
 
-def serverStep(server):
+def serverStep(server, stepNumber):
    timeStep = time.time()
    server.serveforever()
-   ipdb.set_trace()
+   #ipdb.set_trace()
+   clients = game.getClients()
    print "ServerStep %s" % message
-   for client in clients:
-      #ipdb.set_trace()
-      if len(addressTmp) > 0:
-         if(client.address[1] == addressTmp[0][1]):
-            if(len(dataTmp) > 0):
-               client.data = dataTmp[0]
-               dataTmp.remove(dataTmp[0])
-            addressTmp.remove(addressTmp[0])
+   if stepNumber % 30 == 0 :
+     for client in clients:
+        client.sendMessage(game.getObjects())
    return time.time() - timeStep
 
 
@@ -49,10 +53,5 @@ server = SimpleWebSocketServer2('', 5627, SimpleConnexion)
 iteration = 0
 #ipdb.set_trace()
 while 1 :
-   serverStep(server)
+   serverStep(server, iteration)
    iteration += 1
-   if(iteration%10==0):
-      for client in clients:
-          if client.data != "":
-             print client.address
-             print client.data.decode("utf-8")

@@ -13,8 +13,6 @@ class Map:
 	    doc = "The sizeX property."
 	    def fget(self):
 	        return self._sizeX
-	    def fset(self, value):
-	        self._sizeX = value
 	    return locals()
 	sizeX = property(**sizeX())
 
@@ -22,7 +20,5 @@ class Map:
 	    doc = "The sizeY property."
 	    def fget(self):
 	        return self._sizeY
-	    def fset(self, value):
-	        self._sizeY = value
 	    return locals()
 	sizeY = property(**sizeY())

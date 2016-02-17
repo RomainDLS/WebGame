@@ -5,6 +5,8 @@ var image = new Image();
 var myInterval;
 image.src = "sprites/losange.png";
 
+var objectList = []
+
 //window.onload = function() {
 function LaunchGame(){
 	var canvas = document.getElementById("canvas");
@@ -16,6 +18,7 @@ function LaunchGame(){
 		mouseY = position.y;
 	}, false);
 	
+
 	myInterval = setInterval(animate, 500/50);
 	
 	function animate(){
@@ -26,7 +29,33 @@ function LaunchGame(){
 		context.rotate(angle);
 		context.drawImage(image, 0 - 60/2, 0 - 100/2, 60, 100);
 		context.restore();
+		drawObjects();
 	}
+
+	function drawObjects(){
+		for (i=0; i<objectList.length; i++){
+			object = objectList[i];
+			var x = object.position[0];
+			var y = object.position[1];
+			if (object.type == "rectangle"){
+				context.rect(x,y,object.params[0],object.params[1]);
+				context.stroke();
+			}
+			if (object.type == "ellipse"){
+				var r = object.params[0];
+				var wX = object.params[1];
+				var wY = object.params[2];
+				var angle = object.angle;
+				context.beginPath();
+				context.ellipse(x,y,r*wX,r*wY,angle * Math.PI / 180,0,2 * Math.PI);
+				context.stroke();
+			}
+			if (object.type == "complexe"){
+
+			}
+		}
+	}
+
 }
 
 function StopGame(){

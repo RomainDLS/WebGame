@@ -17,14 +17,28 @@ class Engine(object):
 	def addNewObject(self, objectName, isStatic, shape):
 		self._objectIdCount += 1
 		if isStatic :
-			newObject = staticObject(0,0, objectName, self._objectIdCount, shape)
+			newObject = staticObject(objectName, self._objectIdCount, shape)
 		else : 
-			newObject = dynamicObject(0,0, objectName, self._objectIdCount, shape)
+			newObject = dynamicObject(objectName, self._objectIdCount, shape)
 		self._objectList.append(newObject)
 		return self._objectIdCount
 
-	def getOObjectbyId(self, objectId):
+	def getObjectbyId(self, objectId):
 		for singleObject in self._objectList:
 			if singleObject._id == objectId :
 				return singleObject
 		return None
+
+	def objectList():
+	    doc = "The objectList property."
+	    def fget(self):
+	        return self._objectList
+	    return locals()
+	objectList = property(**objectList())
+
+	def map():
+	    doc = "The map property."
+	    def fget(self):
+	        return self._map
+	    return locals()
+	map = property(**map())
