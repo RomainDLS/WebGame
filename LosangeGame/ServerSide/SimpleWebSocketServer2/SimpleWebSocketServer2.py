@@ -20,7 +20,7 @@ import struct
 import ssl
 import errno
 import codecs
-import pdb
+import ipdb
 from collections import deque
 from select import select
 
@@ -597,7 +597,7 @@ class SimpleWebSocketServer2(object):
             pass
 
    def serveforever(self):
-      #pdb.set_trace()
+      #ipdb.set_trace()
       boucle = True
       while(boucle):
         writers = []
@@ -629,6 +629,7 @@ class SimpleWebSocketServer2(object):
                        raise Exception("received client close")
 
           except Exception as n:
+             boucle = False
 
              if client:
                 client.client.close()
@@ -664,7 +665,6 @@ class SimpleWebSocketServer2(object):
           else:
              client = None
              try:
-                #pdb.set_trace()
                 boucle = False
                 client = self.connections[ready]
                 client._handleData()

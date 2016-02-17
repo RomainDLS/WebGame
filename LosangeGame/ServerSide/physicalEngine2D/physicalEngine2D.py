@@ -21,7 +21,7 @@ class Engine(object):
 		else : 
 			newObject = dynamicObject(objectName, self._objectIdCount, shape)
 		self._objectList.append(newObject)
-		return self._objectIdCount
+		return newObject
 
 	def getObjectbyId(self, objectId):
 		for singleObject in self._objectList:

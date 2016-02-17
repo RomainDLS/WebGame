@@ -17,7 +17,7 @@ function LaunchGame(){
 		mouseX = position.x;
 		mouseY = position.y;
 	}, false);
-	
+
 
 	myInterval = setInterval(animate, 500/50);
 	
@@ -30,6 +30,7 @@ function LaunchGame(){
 		context.drawImage(image, 0 - 60/2, 0 - 100/2, 60, 100);
 		context.restore();
 		drawObjects();
+		sendAngle();
 	}
 
 	function drawObjects(){

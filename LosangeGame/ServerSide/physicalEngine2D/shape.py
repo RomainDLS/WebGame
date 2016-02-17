@@ -32,7 +32,8 @@ class Shape(object):
 			sumY += self._linkedPoints[i][1]
 		return (sumX/nbP, sumY/nbP)
 
-	def _rotate(self, angle, center = None):
+	def rotate(self, angle, center = None):
+		self._angle += angle
 		nbP = self._nbPoints
 		if center is None:
 			center = self.centroid
@@ -68,7 +69,7 @@ class Shape(object):
 	    def fget(self):
 	        return self._angle
 	    def fset(self, value, center = None):
-	    	self._rotate(value, center)
+	    	self.rotate(value - self._angle, center)
 	        self._angle = value
 	    return locals()
 	angle = property(**angle())

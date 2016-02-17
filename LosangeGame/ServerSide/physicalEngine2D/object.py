@@ -34,12 +34,15 @@ class Object(object):
 		else :
 			jsonObject['type'] = "complexe"
 			jsonObject['params'] = self._shape.linkedPoints
-		return json.dumps(jsonObject)
+		return jsonObject
 
 	def setPosition(self, x, y):
 		self._shape.setPosition(x,y)
 		self._x = self._shape.x
 		self._y = self._shape.y
+
+	def rotate(self, angle, center = None):
+		self._shape.rotate(angle, center)
 
 	def shape():
 	    doc = "The shape property."
@@ -92,9 +95,6 @@ class dynamicObject(Object):
 		self._accelerationX = 0
 		self._accelerationY = 0
 		Object.__init__(self,objectName,objectId,shape)
-
-	def rotate(self, angle, center = None):
-		self._shape.rotate(angle, center)
 
 	def accelerationX():
 	    doc = "The accelerationX property."

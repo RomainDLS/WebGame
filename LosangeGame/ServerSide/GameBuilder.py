@@ -1,6 +1,5 @@
-import ipdb
+import ipdb, time, json
 import physicalEngine2D as p
-import json
 
 class Player:
 	def __init__(self, client):
@@ -8,9 +7,19 @@ class Player:
 		self._addressClient = client.address[1]
 		self._client = client 
 		self._angle = 0
+		self._receivedData = False
 
 	def angle(self, angle):
 		self._angle = angle
+
+	def receivedData():
+	    doc = "The receivedData property."
+	    def fget(self):
+	        return self._receivedData
+	    def fset(self, value):
+	        self._receivedData = value
+	    return locals()
+	receivedData = property(**receivedData())
 
 	def angle():
 	    doc = "The angle property."
@@ -46,18 +55,24 @@ class Game:
 	def __init__(self):
 		self._playerList = []
 		self._gameProcessing = p.Engine(1000,600)
-		rectangle = p.Rectangle(5,5,10,10)
-		circle = p.Ellipse(50, 50, 10, 1, 2, 45)
-		self._gameProcessing.addNewObject("rectangle",True,rectangle)
-		self._gameProcessing.addNewObject("circle",False,circle)
+		rectangle = self._gameProcessing.addNewObject("rectangle",True,p.Rectangle(5,5,10,10))
+		circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(50, 50, 10, 1, 2, 45))
+
+
+	def step(self):
+		timeStep = time.time()
+		self._gameProcessing.objectList[1].rotate(1)
+		return time.time() - timeStep	
 
 	def append(self, player):
 		#ipdb.set_trace()
 		self._playerList.append(player)
 
-	def remove(self, player):
+	def remove(self, addressIp, addressClient):
 		#ipdb.set_trace()
-		self._playerList.remove(player)
+		for player in self._playerList :
+			if player.addressIp == addressIp and player.addressClient :
+				self._playerList.remove(player)
 
 	def getPlayerByAddress(self, ip, clientNumber):
 		if len(self._playerList) > 0:
@@ -77,9 +92,10 @@ class Game:
 		return clientList
 
 	def getObjects(self):
-		str = ''
+		return self._gameProcessing.objectList
+
+	def getJsonObjects(self):
+		objList = []
 		for obj in self._gameProcessing.objectList:
-			str += obj.getJsonObject()
-			if obj is not self._gameProcessing.objectList[-1]:
-				str += '//'
-		return unicode(str)
+			objList.append(obj.getJsonObject())
+		return unicode(json.dumps(objList))

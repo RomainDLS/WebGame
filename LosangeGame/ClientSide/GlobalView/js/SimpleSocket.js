@@ -20,21 +20,18 @@ function onOpen(evt)
   console.log("connected\n");
   document.myform.connectButton.disabled = true;
   document.myform.disconnectButton.disabled = false;
+  doSend("connected");
 }
 function onClose(evt)
 {
   console.log("disconnected\n");
-  StopGame();
   document.myform.connectButton.disabled = false;
   document.myform.disconnectButton.disabled = true;
+  StopGame();
 }
 function onMessage(evt)
 {
-  objectList = []
-  for (i=0; i< evt.data.split("//").length; i++){
-    objectList.push(JSON.parse(evt.data.split("//")[i]));
-  }
-  console.log(objectList);
+  objectList = JSON.parse(evt.data);
 }
 function onError(evt)
 {
