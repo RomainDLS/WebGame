@@ -3,9 +3,22 @@
 
 from SimpleWebSocketServer2 import WebSocket, SimpleWebSocketServer2
 from GameBuilder import Player, Game
-import ipdb, time
+import ipdb, time, json
 import sys
+import signal
 
+class TimeoutException(Exception):   # Custom exception class
+    pass
+
+def timeout_handler(signum, frame):   # Custom signal handler
+    raise TimeoutException
+
+servermaxwait = {}
+SERVERMAXWAIT= 0.015
+servermaxwait[0] = SERVERMAXWAIT
+servermaxwaitafterconnexion = 1
+# Change the behavior of SIGALRM
+signal.signal(signal.SIGALRM, timeout_handler)
 game = Game()
 
 
@@ -22,10 +35,14 @@ class SimpleConnexion(WebSocket):
         if message[0] == 'connected' :
           print self.address, 'connection client'
         if message[0] == 'globalView' :
-          player.isGlobalView = True         
+          player.isGlobalView = True
+          #ipdb.set_trace(frame=None)
+          #player.client.sendMessage(unicode(json.dumps(game.getMapSize())))
+          #print 'globalView'       
 
     def handleConnected(self):
        #ipdb.set_trace()
+       servermaxwait[0] = servermaxwaitafterconnexion
        newPlayer = Player(self)
        game.append(newPlayer)
        print self.address, 'connection server'
@@ -49,8 +66,19 @@ def playersAllReceivedData():
 
 def serverStep(server, stepNumber):
    timeStep = time.time()
+
    while playersAllReceivedData() :
-      server.serveforever()
+      #signal.setitimer(signal.ITIMER_REAL,servermaxwait[0])
+      try: 
+         server.serveforever()
+         #print 'forever'
+      except TimeoutException:
+         #print 'serverstep is waiting for too long... servermaxwait :', servermaxwait
+         continue # continue the for loop if function A takes more than 5 second
+      else :
+         signal.alarm(0)
+   if servermaxwait[0] == servermaxwaitafterconnexion :
+      servermaxwait[0] = SERVERMAXWAIT
    game.step()
 
    clients = game.getClients()

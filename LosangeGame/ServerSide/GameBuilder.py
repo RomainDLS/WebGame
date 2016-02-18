@@ -71,6 +71,12 @@ class Game:
 		rectangle = self._gameProcessing.addNewObject("rectangle",True,p.Rectangle(5,5,10,10))
 		circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(50, 50, 10, 1, 2, 45))
 
+	def getMapSize(self):
+		mapSize = {}
+		mapSize['type'] = 'mapSize'
+		mapSize['x'] = self._gameProcessing.map.sizeX
+		mapSize['y'] = self._gameProcessing.map.sizeY
+		return mapSize
 	def step(self):
 		timeStep = time.time()
 		self._gameProcessing.objectList[1].rotate(2)

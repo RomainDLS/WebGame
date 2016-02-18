@@ -11,13 +11,12 @@ var objectList = []
 function LaunchGame(){
 	var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
-	
+
 	canvas.addEventListener('mousemove', function(evt) {
 		var position = getMousePos(canvas, evt);
 		mouseX = position.x;
 		mouseY = position.y;
 	}, false);
-
 
 	myInterval = setInterval(animate, 500/50);
 	
@@ -31,10 +30,8 @@ function LaunchGame(){
 	function drawObjects(){
 		for (i=0; i<objectList.length; i++){
 			object = objectList[i];
-			var x = object.position[0];
-			var y = object.position[1];
 			if (object.type == "rectangle"){
-				context.rect(x,y,object.params[0],object.params[1]);
+				context.rect(object.position[0],object.position[1],object.params[0],object.params[1]);
 				context.stroke();
 			}
 			if (object.type == "ellipse"){
@@ -43,15 +40,18 @@ function LaunchGame(){
 				var wY = object.params[2];
 				var angle = object.angle;
 				context.beginPath();
-				context.ellipse(x,y,r*wX,r*wY,angle * Math.PI / 180,0,2 * Math.PI);
+				context.ellipse(object.position[0],object.position[1],r*wX,r*wY,angle * Math.PI / 180,0,2 * Math.PI);
 				context.stroke();
 			}
 			if (object.type == "complexe"){
 
 			}
+			if (object.type == "mapSize"){
+				canvas.width = object.x;
+				canvas.height = object.y;
+			}
 		}
 	}
-
 }
 
 function StopGame(){
