@@ -12,29 +12,30 @@ function doConnect()
   websocket.onerror = function(evt) { onError(evt) };
   LaunchGame();
 }
-function sendMessage(){
-  websocket.send(getAngle()*90/Math.PI);
+function sendAngle(angle){
+  websocket.send("angle//" + angle*180/Math.PI);
 }
 function onOpen(evt)
 {
-  writeToScreen("connected\n");
+  console.log("connected\n");
   document.myform.connectButton.disabled = true;
   document.myform.disconnectButton.disabled = false;
+  doSend("connected");
 }
 function onClose(evt)
 {
-  writeToScreen("disconnected\n");
-  StopGame();
+  console.log("disconnected\n");
   document.myform.connectButton.disabled = false;
   document.myform.disconnectButton.disabled = true;
+  StopGame();
 }
 function onMessage(evt)
 {
-  writeToScreen("response: " + evt.data + '\n');
+  objectList = JSON.parse(evt.data);
 }
 function onError(evt)
 {
-  writeToScreen('error: ' + evt.data + '\n');
+  console.log('error: ' + evt.data + '\n');
   websocket.close();
   document.myform.connectButton.disabled = false;
   document.myform.disconnectButton.disabled = true;
@@ -42,10 +43,6 @@ function onError(evt)
 function doSend(message)
 { 
   websocket.send(message);
-}
-function writeToScreen(message)
-{
-  console.log(message);
 }
 window.addEventListener("load", init, false );
 function doDisconnect() {

@@ -12,8 +12,8 @@ function doConnect()
   websocket.onerror = function(evt) { onError(evt) };
   LaunchGame();
 }
-function sendAngle(){
-  websocket.send("angle//" + getAngle()*90/Math.PI);
+function sendAngle(angle){
+  websocket.send("angle//" + angle*180/Math.PI);
 }
 function onOpen(evt)
 {

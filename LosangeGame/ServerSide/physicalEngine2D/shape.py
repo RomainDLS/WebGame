@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*
+
 from __future__ import division
 import math
 import ipdb
@@ -21,7 +24,7 @@ class Shape(object):
 		self._linkedPoints = linkedPoints
 		self._nbPoints = len(linkedPoints)
 		self._centroid = self.getCentroid()
-		self._angle = angle
+		self._angle = float(angle)
 
 	def getCentroid(self):
 		sumX = 0
@@ -34,6 +37,8 @@ class Shape(object):
 
 	def rotate(self, angle, center = None):
 		self._angle += angle
+		if self._angle >= 360 :
+			self._angle = self._angle % 360
 		nbP = self._nbPoints
 		if center is None:
 			center = self.centroid
@@ -69,8 +74,9 @@ class Shape(object):
 	    def fget(self):
 	        return self._angle
 	    def fset(self, value, center = None):
-	    	self.rotate(value - self._angle, center)
-	        self._angle = value
+	    	rotationToDo = float(value) - float(self._angle)
+	    	self.rotate(rotationToDo, center)
+	        self._angle = float(value)
 	    return locals()
 	angle = property(**angle())
 

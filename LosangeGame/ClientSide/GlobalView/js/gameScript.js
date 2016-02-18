@@ -22,15 +22,10 @@ function LaunchGame(){
 	myInterval = setInterval(animate, 500/50);
 	
 	function animate(){
-		var angle = getAngle();
 		context.save(); 
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.translate(canvas.width/2, canvas.height/2);
-		context.rotate(angle);
-		context.drawImage(image, 0 - 60/2, 0 - 100/2, 60, 100);
-		context.restore();
 		drawObjects();
-		sendAngle();
+		doSend("globalView")
 	}
 
 	function drawObjects(){

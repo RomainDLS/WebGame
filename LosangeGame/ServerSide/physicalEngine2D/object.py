@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*
+
 #    ----> X
 #  |
 #  |
@@ -43,6 +46,9 @@ class Object(object):
 
 	def rotate(self, angle, center = None):
 		self._shape.rotate(angle, center)
+
+	def angle(self, angle):
+		self._shape.angle = angle
 
 	def shape():
 	    doc = "The shape property."

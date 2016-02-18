@@ -1,8 +1,12 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*
+
 import ipdb, time, json
 import physicalEngine2D as p
 
 class Player:
 	def __init__(self, client):
+		self._isGlobalView = False
 		self._addressIp = client.address[0]
 		self._addressClient = client.address[1]
 		self._client = client 
@@ -11,6 +15,15 @@ class Player:
 
 	def angle(self, angle):
 		self._angle = angle
+
+	def isGlobalView():
+	    doc = "The isGlobalView property."
+	    def fget(self):
+	        return self._isGlobalView
+	    def fset(self, value):
+	        self._isGlobalView = value
+	    return locals()
+	isGlobalView = property(**isGlobalView())
 
 	def receivedData():
 	    doc = "The receivedData property."
@@ -58,10 +71,9 @@ class Game:
 		rectangle = self._gameProcessing.addNewObject("rectangle",True,p.Rectangle(5,5,10,10))
 		circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(50, 50, 10, 1, 2, 45))
 
-
 	def step(self):
 		timeStep = time.time()
-		self._gameProcessing.objectList[1].rotate(1)
+		self._gameProcessing.objectList[1].rotate(2)
 		return time.time() - timeStep	
 
 	def append(self, player):

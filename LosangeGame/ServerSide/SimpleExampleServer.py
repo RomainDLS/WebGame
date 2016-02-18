@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*
+
 from SimpleWebSocketServer2 import WebSocket, SimpleWebSocketServer2
 from GameBuilder import Player, Game
 import ipdb, time
@@ -13,10 +16,13 @@ class SimpleConnexion(WebSocket):
         player = game.getPlayerByAddress(address[0],address[1])
         message = self.data.encode('ascii', 'replace').split('//')
         player.receivedData = True
-        if message[0] == 'angle' :
+        if message[0] == 'angle' : 
+          #ipdb.set_trace(frame=None)
           player.angle = message[1]
         if message[0] == 'connected' :
           print self.address, 'connection client'
+        if message[0] == 'globalView' :
+          player.isGlobalView = True         
 
     def handleConnected(self):
        #ipdb.set_trace()
@@ -57,9 +63,14 @@ def serverStep(server, stepNumber):
 
 server = SimpleWebSocketServer2('', 5627, SimpleConnexion)
 iteration = 0
+framesTime = 0
 #ipdb.set_trace()
 while 1 :
    frameTime = serverStep(server, iteration)
+   framesTime += frameTime
    iteration += 1
-   if iteration % 100 == 0 :
-      print frameTime
+   #print '-',frameTime
+   if iteration % 250 == 0 :
+      t = framesTime/250
+      print ' average fps = ', (1/t)
+      framesTime = 0
