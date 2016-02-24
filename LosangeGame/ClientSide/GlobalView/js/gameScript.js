@@ -5,11 +5,12 @@ var image = new Image();
 var myInterval;
 image.src = "sprites/losange.png";
 
-var objectList = []
+var objectList = [];
+var canvas;
 
 //window.onload = function() {
 function LaunchGame(){
-	var canvas = document.getElementById("canvas");
+	canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
 
 	canvas.addEventListener('mousemove', function(evt) {
@@ -31,7 +32,15 @@ function LaunchGame(){
 		for (i=0; i<objectList.length; i++){
 			object = objectList[i];
 			if (object.type == "rectangle"){
-				context.rect(object.position[0],object.position[1],object.params[0],object.params[1]);
+				context.save(); 
+				if (object.angle != 0){
+					context.translate(object.position[0] + object.params[0]/2, object.position[1] + object.params[1]/2);
+					context.rotate(object.angle * Math.PI / 180);
+					context.rect(0 - object.params[0]/2,0 - object.params[1]/2,object.params[0],object.params[1]);
+				} else {
+					context.rect(object.position[0],object.position[1],object.params[0],object.params[1]);
+				}
+				context.restore();
 				context.stroke();
 			}
 			if (object.type == "ellipse"){
@@ -44,14 +53,20 @@ function LaunchGame(){
 				context.stroke();
 			}
 			if (object.type == "complexe"){
-
-			}
-			if (object.type == "mapSize"){
-				canvas.width = object.x;
-				canvas.height = object.y;
+				context.beginPath();
+				context.moveTo(object.params[0][0],object.params[0][1]);
+				for(i=1; i<object.params.length; i++){
+					context.lineTo(object.params[i][0],object.params[i][1]);
+				}
+				context.lineTo(object.params[0][0],object.params[0][1]);
 			}
 		}
 	}
+}
+
+function setMapSize(x , y){
+	canvas.width = x;
+	canvas.height = y;
 }
 
 function StopGame(){

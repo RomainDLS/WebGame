@@ -34,6 +34,7 @@ class SimpleConnexion(WebSocket):
           player.angle = message[1]
         if message[0] == 'connected' :
           print self.address, 'connection client'
+          player.client.sendMessage(unicode(json.dumps(game.getMapSize())))
         if message[0] == 'globalView' :
           player.isGlobalView = True
           #ipdb.set_trace(frame=None)

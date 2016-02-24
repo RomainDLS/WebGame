@@ -32,6 +32,9 @@ function onClose(evt)
 function onMessage(evt)
 {
   objectList = JSON.parse(evt.data);
+  if (objectList.type == "mapSize"){
+    setMapSize(objectList.x, objectList.y);
+  }
 }
 function onError(evt)
 {

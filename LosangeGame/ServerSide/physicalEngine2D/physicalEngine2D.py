@@ -10,12 +10,19 @@
 from object import staticObject, dynamicObject, Object
 from map import Map
 from shape import *
+import ipdb
 
 class Engine(object):
 	def __init__(self, mapSizeX, mapSizeY):
 		self._objectList = []
 		self._objectIdCount = 0
 		self._map = Map(mapSizeX,mapSizeY)
+
+	def engineStep(self):
+		#ipdb.set_trace()
+		for obj in self._objectList:
+			if type(obj) is dynamicObject :
+				obj.updatePosition()
 
 	def addNewObject(self, objectName, isStatic, shape):
 		self._objectIdCount += 1

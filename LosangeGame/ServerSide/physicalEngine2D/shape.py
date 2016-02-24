@@ -61,13 +61,12 @@ class Shape(object):
 		return math.acos(width/radius) * 180 / math.pi
 
 	def setPosition(self, x, y):
+		#ipdb.set_trace()
 		dx = self._centroid[0] - x
 		dy = self._centroid[1] - y
-		for point in self._linkedPoints:
-			point[0] += dx
-			point[1] += dy
-		self._centroid[0] = x
-		self._centroid[1] = y
+		for i in range (0, self._nbPoints) :
+			self._linkedPoints[i] = (self._linkedPoints[i][0] + dx, self._linkedPoints[i][1] + dy)
+		self._centroid = (x, y)
 
 	def angle():
 	    doc = "The angle property."
@@ -106,8 +105,8 @@ class Shape(object):
 	    def fget(self):
 	        return self._linkedPoints
 	    def fset(self, value):
-	    	if type(value) is not dict:
-	    		raise Exception("type of linkedPoints is not dict")
+	    	if type(value) is not list:
+	    		raise Exception("type of linkedPoints is not list")
 	    	self._linkedPoints = value
 	    return locals()
 
@@ -126,11 +125,11 @@ class Shape(object):
 class Rectangle(Shape):
 	def __init__(self, x, y, width, height):
 		#ipdb.set_trace()
-		linkedPoints = {}
-		linkedPoints[0] = (x,y)
-		linkedPoints[1] = (x + width, y)
-		linkedPoints[2] = (x + width,y + height)
-		linkedPoints[3] = (x,y + height)
+		linkedPoints = []
+		linkedPoints.append((x,y))
+		linkedPoints.append((x + width, y))
+		linkedPoints.append((x + width,y + height))
+		linkedPoints.append((x,y + height))
 		self._x = x
 		self._y = y
 		self._width = width
@@ -170,13 +169,11 @@ class Ellipse(Shape):
 		self._r = r
 		self._wX = wX
 		self._wY = wY
-		linkedPoints = {}
-		count = 0
+		linkedPoints = []
 		for i in range (0, 360, CIRCLE_DRAWING_PRECISION):
 			pointX = x + wX * r * math.cos(math.radians(i))
 			pointY = y + wY * r * math.sin(math.radians(i))
-			linkedPoints[count] = (int(round(pointX)), int(round(pointY)))
-			count += 1
+			linkedPoints.append((int(round(pointX)), int(round(pointY))))
 		Shape.__init__(self, linkedPoints, angle)
 
 	def wX():

@@ -100,7 +100,35 @@ class dynamicObject(Object):
 		self._speedY = 0
 		self._accelerationX = 0
 		self._accelerationY = 0
+		self._velocity = 0
 		Object.__init__(self,objectName,objectId,shape)
+
+	def updatePosition(self):
+		self._x += self._speedX
+		self._y += self._speedY
+		self.setPosition(self._x, self._y)
+		self._speedX += self._accelerationX
+		self._speedY += self._accelerationY
+		if self._velocity != 0 :
+			self.rotate(self._velocity)
+
+	def speedX():
+	    doc = "The speedX property."
+	    def fget(self):
+	        return self._speedX
+	    def fset(self, value):
+	        self._speedX = value
+	    return locals()
+	speedX = property(**speedX())
+
+	def speedY():
+	    doc = "The speedY property."
+	    def fget(self):
+	        return self._speedY
+	    def fset(self, value):
+	        self._speedY = value
+	    return locals()
+	speedY = property(**speedY())
 
 	def accelerationX():
 	    doc = "The accelerationX property."
@@ -117,7 +145,14 @@ class dynamicObject(Object):
 	        return self._accelerationY
 	    def fset(self, value):
 	        self._accelerationY = value
-	    def fdel(self):
-	        del self._accelerationY
 	    return locals()
 	accelerationY = property(**accelerationY())
+
+	def velocity():
+	    doc = "The velocity property."
+	    def fget(self):
+	        return self._velocity
+	    def fset(self, value):
+	        self._velocity = value
+	    return locals()
+	velocity = property(**velocity())

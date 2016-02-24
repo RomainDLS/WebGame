@@ -68,8 +68,12 @@ class Game:
 	def __init__(self):
 		self._playerList = []
 		self._gameProcessing = p.Engine(1000,600)
-		rectangle = self._gameProcessing.addNewObject("rectangle",True,p.Rectangle(5,5,10,10))
-		circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(50, 50, 10, 1, 2, 45))
+		rectangle = self._gameProcessing.addNewObject("rectangle",False,p.Rectangle(50,50,100,100))
+		#circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(100, 100, 10, 1, 2, 0))
+		cShape = [(110, 100), (103, 119), (92, 112), (92, 88), (103, 81), (109, 92)]
+		cObj = self._gameProcessing.addNewObject("mistyc", False, p.Shape(cShape))
+		self._gameProcessing.objectList[1].velocity = 1
+		self._gameProcessing.objectList[0].velocity = -1
 
 	def getMapSize(self):
 		mapSize = {}
@@ -77,9 +81,10 @@ class Game:
 		mapSize['x'] = self._gameProcessing.map.sizeX
 		mapSize['y'] = self._gameProcessing.map.sizeY
 		return mapSize
+
 	def step(self):
 		timeStep = time.time()
-		self._gameProcessing.objectList[1].rotate(2)
+		self._gameProcessing.engineStep()
 		return time.time() - timeStep	
 
 	def append(self, player):
