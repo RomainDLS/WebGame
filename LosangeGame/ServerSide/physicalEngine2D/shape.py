@@ -62,8 +62,8 @@ class Shape(object):
 
 	def setPosition(self, x, y):
 		#ipdb.set_trace()
-		dx = self._centroid[0] - x
-		dy = self._centroid[1] - y
+		dx = x - self._centroid[0]
+		dy = y - self._centroid[1]
 		for i in range (0, self._nbPoints) :
 			self._linkedPoints[i] = (self._linkedPoints[i][0] + dx, self._linkedPoints[i][1] + dy)
 		self._centroid = (x, y)

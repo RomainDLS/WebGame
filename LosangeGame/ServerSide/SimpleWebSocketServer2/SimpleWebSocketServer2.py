@@ -592,6 +592,7 @@ class SimpleWebSocketServer2(object):
       for desc, conn in self.connections.items():
          conn.close()
          try:
+            # ipdb.set_trace(frame=None)
             conn.handleClose()
          except:
             pass
@@ -636,6 +637,7 @@ class SimpleWebSocketServer2(object):
 
              try:
                 if client:
+                   # ipdb.set_trace(frame=None)
                    client.handleClose()
              except:
                 pass
@@ -668,12 +670,12 @@ class SimpleWebSocketServer2(object):
                 boucle = False
                 client = self.connections[ready]
                 client._handleData()
-             except Exception as n:
+             except Exception as e:
                 if client:
                    client.client.close()
-
                 try:
                    if client:
+                      # ipdb.set_trace(frame=None)
                       client.handleClose()
                 except:
                    pass
@@ -699,6 +701,7 @@ class SimpleWebSocketServer2(object):
                  client.client.close()
 
                  try:
+                    # ipdb.set_trace(frame=None)
                     client.handleClose()
                  except:
                     pass

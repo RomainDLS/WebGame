@@ -72,8 +72,9 @@ class Game:
 		#circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(100, 100, 10, 1, 2, 0))
 		cShape = [(110, 100), (103, 119), (92, 112), (92, 88), (103, 81), (109, 92)]
 		cObj = self._gameProcessing.addNewObject("mistyc", False, p.Shape(cShape))
-		self._gameProcessing.objectList[1].velocity = 1
-		self._gameProcessing.objectList[0].velocity = -1
+		#ipdb.set_trace()
+		cObj.velocity = 1
+		rectangle.velocity = -1
 
 	def getMapSize(self):
 		mapSize = {}
@@ -83,18 +84,26 @@ class Game:
 		return mapSize
 
 	def step(self):
+		#ipdb.set_trace(frame=None)
 		timeStep = time.time()
 		self._gameProcessing.engineStep()
+		for player in self._playerList:
+			idPlayer = player._addressClient
+			self._gameProcessing.getObjectbyId(idPlayer).angle(player.angle)
 		return time.time() - timeStep	
 
 	def append(self, player):
 		#ipdb.set_trace()
+		playerShape = p.Shape([(30, 0), (60, 50), (30, 100), (0, 50)])
+		playerShape.setPosition(300, 100)
+		self._gameProcessing.addNewObject("player", False, playerShape, player.addressClient)
 		self._playerList.append(player)
 
 	def remove(self, addressIp, addressClient):
 		#ipdb.set_trace()
 		for player in self._playerList :
 			if player.addressIp == addressIp and player.addressClient :
+				self._gameProcessing.deleteObject(player.addressClient)
 				self._playerList.remove(player)
 
 	def getPlayerByAddress(self, ip, clientNumber):

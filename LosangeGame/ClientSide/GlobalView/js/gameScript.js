@@ -31,6 +31,8 @@ function LaunchGame(){
 	function drawObjects(){
 		for (i=0; i<objectList.length; i++){
 			object = objectList[i];
+			var x = object.position[0];
+			var y = object.position[1];
 			if (object.type == "rectangle"){
 				context.save(); 
 				if (object.angle != 0){
@@ -41,7 +43,6 @@ function LaunchGame(){
 					context.rect(object.position[0],object.position[1],object.params[0],object.params[1]);
 				}
 				context.restore();
-				context.stroke();
 			}
 			if (object.type == "ellipse"){
 				var r = object.params[0];
@@ -49,17 +50,17 @@ function LaunchGame(){
 				var wY = object.params[2];
 				var angle = object.angle;
 				context.beginPath();
-				context.ellipse(object.position[0],object.position[1],r*wX,r*wY,angle * Math.PI / 180,0,2 * Math.PI);
-				context.stroke();
+				context.ellipse(x,y,r*wX,r*wY,angle * Math.PI / 180,0,2 * Math.PI);
 			}
 			if (object.type == "complexe"){
 				context.beginPath();
 				context.moveTo(object.params[0][0],object.params[0][1]);
-				for(i=1; i<object.params.length; i++){
-					context.lineTo(object.params[i][0],object.params[i][1]);
+				for(j=1; j<object.params.length; j++){
+					context.lineTo(object.params[j][0],object.params[j][1]);
 				}
 				context.lineTo(object.params[0][0],object.params[0][1]);
 			}
+			context.stroke();
 		}
 	}
 }
