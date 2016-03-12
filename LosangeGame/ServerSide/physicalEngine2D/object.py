@@ -8,6 +8,7 @@
 #  Y
 
 from shape import *
+from bound import *
 import json
 
 class Object(object):
@@ -17,6 +18,8 @@ class Object(object):
 		self._name = objectName
 		self._id = objectId
 		self._shape = shape
+		self._isSaved = False
+		self._savedObject = self
 
 	def getJsonObject(self, stepX = 0, stepY = 0):
 		jsonObject = {}
@@ -45,6 +48,14 @@ class Object(object):
 			jsonObject['params'] = list(shapeTmp.linkedPoints)
 			shapeTmp.setPosition(xTmp, yTmp)
 		return jsonObject
+
+	def save(self):
+		self._savedObject = Object(self._name, self._id, self._shape)
+		self._isSaved = True
+
+	def getBackup(self):
+		if self._isSaved is True :
+			return self._savedObject
 
 	def setPosition(self, x, y):
 		self._shape.setPosition(x,y)
@@ -113,7 +124,8 @@ class dynamicObject(Object):
 	def updatePosition(self):
 		self._x += self._speedX
 		self._y += self._speedY
-		self.setPosition(self._x, self._y)
+		if self._speedX != 0 or self._speedY != 0:
+			self.setPosition(self._x, self._y)
 		self._speedX += self._accelerationX
 		self._speedY += self._accelerationY
 		if self._velocity != 0 :

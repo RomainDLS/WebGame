@@ -66,6 +66,7 @@ function LaunchGame(){
 			var y = object.position[1];
 			if (object.type == "rectangle"){
 				context.save(); 
+				context.beginPath();
 				if (object.angle != 0){
 					context.translate(object.position[0] + object.params[0]/2, object.position[1] + object.params[1]/2);
 					context.rotate(object.angle * Math.PI / 180);

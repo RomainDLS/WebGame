@@ -10,14 +10,14 @@ import random
 class Game:
 	def __init__(self):
 		self._playerList = []
-		self._spawnPoints = [(300,100),(300),(300),(100,300),(100,100)]
+		self._spawnPoints = [(220,100),(200,200)]
 		self._gameProcessing = p.Engine(2000,1200)
 		rectangle = self._gameProcessing.addNewObject("rectangle",False,p.Rectangle(50,50,100,100))
 		#circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(100, 100, 10, 1, 2, 0))
-		cShape = [(110, 100), (103, 119), (92, 112), (92, 88), (103, 81), (109, 92)]
-		cObj = self._gameProcessing.addNewObject("mistyc", False, p.Shape(cShape))
+		# cShape = [(110, 100), (103, 119), (92, 112), (92, 88), (103, 81), (109, 92)]
+		# cObj = self._gameProcessing.addNewObject("mistyc", False, p.Shape(cShape))
 		#ipdb.set_trace()
-		cObj.velocity = 1
+		# cObj.velocity = 1
 		rectangle.velocity = -1
 
 	def setPlayerToGlobalView(self, playerAddress):
@@ -36,13 +36,13 @@ class Game:
 		return clientInfo
 
 	def step(self):
-		#ipdb.set_trace(frame=None)
+		# ipdb.set_trace(frame=None)
 		timeStep = time.time()
-		self._gameProcessing.engineStep()
 		for player in self._playerList:
 			idPlayer = player._addressClient
 			if player.isGlobalView is False :
 				self._gameProcessing.getObjectbyId(idPlayer).angle(player.angle)
+		self._gameProcessing.engineStep()
 		return time.time() - timeStep	
 
 	def append(self, player):
@@ -50,7 +50,7 @@ class Game:
 		playerShape = p.Shape([(30, 0), (60, 50), (30, 100), (0, 50)])
 		spawnPoint = random.choice(self._spawnPoints)
 		playerShape.setPosition(spawnPoint[0], spawnPoint[1])
-		self._gameProcessing.addNewObject("player", False, playerShape, player.addressClient)
+		self._gameProcessing.addNewObject("player%d" % int(float(player.addressClient)), False, playerShape, player.addressClient)
 		self._playerList.append(player)
 
 	def remove(self, addressIp, addressClient):

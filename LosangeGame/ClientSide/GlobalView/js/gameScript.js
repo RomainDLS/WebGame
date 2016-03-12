@@ -23,7 +23,7 @@ function LaunchGame(){
 	myInterval = setInterval(animate, 500/50);
 	
 	function animate(){
-		context.save(); 
+		// context.save(); 
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		drawObjects();
 		doSend("globalView")
@@ -37,6 +37,7 @@ function LaunchGame(){
 			var y = object.position[1]/zoom;
 			if (object.type == "rectangle"){
 				context.save(); 
+				context.beginPath();
 				if (object.angle != 0){
 					context.translate((object.position[0] + object.params[0]/2)/zoom, (object.position[1] + object.params[1]/2)/zoom);
 					context.rotate(object.angle * Math.PI / 180);

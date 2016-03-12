@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*
 
-from __future__ import division
-import math
-import ipdb
-
 #  (X,Y)
 #    ----> X
 #  |
 #  |
 #  v
 #  Y
+
+from __future__ import division
+import math
+import ipdb
+from bound import *
 
 CIRCLE_DRAWING_PRECISION = 24			#range from 1 to 90, smaller is morer precise
 
@@ -25,6 +26,27 @@ class Shape(object):
 		self._nbPoints = len(linkedPoints)
 		self._centroid = self.getCentroid()
 		self._angle = float(angle)
+		self._bounds = self.calculBound()
+
+	def calculBound(self):
+		boundMinX = 0
+		boundMaxX = 0
+		boundMinY = 0
+		boundMaxY = 0
+		nbP = self._nbPoints
+		for i in range (0, nbP):
+			point = self._linkedPoints[i]
+			x = point[0]
+			y = point[1]
+			if x < boundMinX or boundMinX == 0 :
+				boundMinX = x 
+			if x > boundMaxX :
+				boundMaxX = x 
+			if y < boundMinY or boundMinY == 0 :
+				boundMinY = y 
+			if y > boundMaxY :
+				boundMaxY = y 
+		return Bounds(boundMaxX, boundMinX, boundMaxY, boundMinY)
 
 	def getCentroid(self):
 		sumX = 0
@@ -42,9 +64,19 @@ class Shape(object):
 		if center is None:
 			center = self.centroid
 		#try optimized for
+		self._bounds.reset()
+		# ipdb.set_trace(frame=None)
 		for i in range (0, nbP):
+			self._linkedPoints[i] = self._rotatePoint(self._linkedPoints[i], center, angle)
 			point = self._linkedPoints[i]
-			self._linkedPoints[i] = self._rotatePoint(point, center, angle)
+			if point[0] < self._bounds.minX or self._bounds.minX == 0 :
+				self._bounds.minX = point[0] 
+			if point[0] > self._bounds.maxX or self._bounds.maxX == 0 :
+				self._bounds.maxX = point[0] 
+			if point[1] < self._bounds.minY or self._bounds.minY == 0 :
+				self._bounds.minY = point[1] 
+			if point[1] > self._bounds.maxY or self._bounds.maxY == 0 :
+				self._bounds.maxY = point[1] 
 
 	def _rotatePoint (self, Point, Center, Angle):
 		Angle = Angle*math.pi/180
@@ -57,11 +89,21 @@ class Shape(object):
 		return (rotatedPointX,rotatedPointY)
 
 	def setPosition(self, x, y):
-		#ipdb.set_trace()
+		# ipdb.set_trace()
 		dx = x - self._centroid[0]
 		dy = y - self._centroid[1]
+		self._bounds.reset()
 		for i in range (0, self._nbPoints) :
 			self._linkedPoints[i] = (self._linkedPoints[i][0] + dx, self._linkedPoints[i][1] + dy)
+			point = self._linkedPoints[i]
+			if point[0] < self._bounds.minX or self._bounds.minX == 0 :
+				self._bounds.minX = point[0] 
+			if point[0] > self._bounds.maxX or self._bounds.maxX == 0 :
+				self._bounds.maxX = point[0] 
+			if point[1] < self._bounds.minY or self._bounds.minY == 0 :
+				self._bounds.minY = point[1] 
+			if point[1] > self._bounds.maxY or self._bounds.maxY == 0 :
+				self._bounds.maxY = point[1] 
 		self._centroid = (x, y)
 
 	def angle():
@@ -74,6 +116,9 @@ class Shape(object):
 	        self._angle = float(value)
 	    return locals()
 	angle = property(**angle())
+
+	def bounds(self):
+		return self._bounds
 
 	def x():
 	    doc = "The x property."
