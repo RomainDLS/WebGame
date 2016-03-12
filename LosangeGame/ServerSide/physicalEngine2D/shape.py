@@ -37,8 +37,7 @@ class Shape(object):
 
 	def rotate(self, angle, center = None):
 		self._angle += angle
-		if self._angle >= 360 :
-			self._angle = self._angle % 360
+		self._angle = self._angle % 360
 		nbP = self._nbPoints
 		if center is None:
 			center = self.centroid
@@ -56,9 +55,6 @@ class Shape(object):
 		rotatedPointX = math.cos(Angle)*(x-Cx)-math.sin(Angle)*(y-Cy) + Cx
 		rotatedPointY = math.sin(Angle)*(x-Cx)+math.cos(Angle)*(y-Cy) + Cy
 		return (rotatedPointX,rotatedPointY)
-
-	def getAngle(self, radius, width):
-		return math.acos(width/radius) * 180 / math.pi
 
 	def setPosition(self, x, y):
 		#ipdb.set_trace()

@@ -3,71 +3,15 @@
 
 import ipdb, time, json
 import physicalEngine2D as p
+from Player import Player
+import random
 
-class Player:
-	def __init__(self, client):
-		self._isGlobalView = False
-		self._addressIp = client.address[0]
-		self._addressClient = client.address[1]
-		self._client = client 
-		self._angle = 0
-		self._receivedData = False
-
-	def angle(self, angle):
-		self._angle = angle
-
-	def isGlobalView():
-	    doc = "The isGlobalView property."
-	    def fget(self):
-	        return self._isGlobalView
-	    def fset(self, value):
-	        self._isGlobalView = value
-	    return locals()
-	isGlobalView = property(**isGlobalView())
-
-	def receivedData():
-	    doc = "The receivedData property."
-	    def fget(self):
-	        return self._receivedData
-	    def fset(self, value):
-	        self._receivedData = value
-	    return locals()
-	receivedData = property(**receivedData())
-
-	def angle():
-	    doc = "The angle property."
-	    def fget(self):
-	        return self._angle
-	    def fset(self, value):
-	        self._angle = value
-	    return locals()
-	angle = property(**angle())
-
-	def client():
-	    doc = "The client property."
-	    def fget(self):
-	        return self._client
-	    return locals()
-	client = property(**client())
-
-	def addressClient():
-	    doc = "The addressClient property."
-	    def fget(self):
-	        return self._addressClient
-	    return locals()
-	addressClient = property(**addressClient())
-
-	def addressIp():
-	    doc = "The addressIp property."
-	    def fget(self):
-	        return self._addressIp
-	    return locals()
-	addressIp = property(**addressIp())
 
 class Game:
 	def __init__(self):
 		self._playerList = []
-		self._gameProcessing = p.Engine(1000,600)
+		self._spawnPoints = [(300,100),(300),(300),(100,300),(100,100)]
+		self._gameProcessing = p.Engine(2000,1200)
 		rectangle = self._gameProcessing.addNewObject("rectangle",False,p.Rectangle(50,50,100,100))
 		#circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(100, 100, 10, 1, 2, 0))
 		cShape = [(110, 100), (103, 119), (92, 112), (92, 88), (103, 81), (109, 92)]
@@ -76,12 +20,20 @@ class Game:
 		cObj.velocity = 1
 		rectangle.velocity = -1
 
-	def getMapSize(self):
-		mapSize = {}
-		mapSize['type'] = 'mapSize'
-		mapSize['x'] = self._gameProcessing.map.sizeX
-		mapSize['y'] = self._gameProcessing.map.sizeY
-		return mapSize
+	def setPlayerToGlobalView(self, playerAddress):
+		# ipdb.set_trace(frame=None)
+		player = self.getPlayerByAddress(playerAddress[0], playerAddress[1])
+		player.isGlobalView = True
+		self._gameProcessing.deleteObjectById(playerAddress[1])
+		del player
+
+	def getClientInfo(self, clientId):
+		clientInfo = {}
+		clientInfo['type'] = 'clientInfo'
+		clientInfo['clientId'] = clientId
+		clientInfo['mapX'] = self._gameProcessing.map.sizeX
+		clientInfo['mapY'] = self._gameProcessing.map.sizeY
+		return clientInfo
 
 	def step(self):
 		#ipdb.set_trace(frame=None)
@@ -89,13 +41,15 @@ class Game:
 		self._gameProcessing.engineStep()
 		for player in self._playerList:
 			idPlayer = player._addressClient
-			self._gameProcessing.getObjectbyId(idPlayer).angle(player.angle)
+			if player.isGlobalView is False :
+				self._gameProcessing.getObjectbyId(idPlayer).angle(player.angle)
 		return time.time() - timeStep	
 
 	def append(self, player):
-		#ipdb.set_trace()
+		# ipdb.set_trace()
 		playerShape = p.Shape([(30, 0), (60, 50), (30, 100), (0, 50)])
-		playerShape.setPosition(300, 100)
+		spawnPoint = random.choice(self._spawnPoints)
+		playerShape.setPosition(spawnPoint[0], spawnPoint[1])
 		self._gameProcessing.addNewObject("player", False, playerShape, player.addressClient)
 		self._playerList.append(player)
 
@@ -126,8 +80,27 @@ class Game:
 	def getObjects(self):
 		return self._gameProcessing.objectList
 
-	def getJsonObjects(self):
+	def getJsonObjects(self, playerAddress):
+		player = self.getPlayerByAddress(playerAddress[0], playerAddress[1])
+		stepX = 0
+		stepY = 0
+
 		objList = []
+		# ipdb.set_trace(frame=None)
+
+		if player.isGlobalView is False : 
+			playerInfo = {}
+			playerInfo['positionX'] =  self._gameProcessing.getObjectbyId(playerAddress[1]).shape.x
+			playerInfo['positionY'] =  self._gameProcessing.getObjectbyId(playerAddress[1]).shape.y
+			objList.append(playerInfo)
+		
 		for obj in self._gameProcessing.objectList:
-			objList.append(obj.getJsonObject())
+			if obj.id == playerAddress[1] and player.isGlobalView is False :
+				stepX = obj.shape.getCentroid()[0] - player.screenSizeX/2
+				stepY = obj.shape.getCentroid()[1] - player.screenSizeY/2
+				# objList.append(obj.getJsonObject(stepX,stepY))
+		for obj in self._gameProcessing.objectList:
+			if obj.id != playerAddress[1] :
+				objList.append(obj.getJsonObject(stepX,stepY))
+
 		return unicode(json.dumps(objList))

@@ -1,12 +1,13 @@
 var mouseX = 0;
 var mouseY = 0;
-
 var image = new Image();
 var myInterval;
-image.src = "sprites/losange.png";
-
 var objectList = [];
 var canvas;
+var playerId;
+var mapToScreen = 1
+image.src = "sprites/losange.png";
+
 
 //window.onload = function() {
 function LaunchGame(){
@@ -30,35 +31,36 @@ function LaunchGame(){
 
 	function drawObjects(){
 		for (i=0; i<objectList.length; i++){
+			var zoom = mapToScreen;
 			object = objectList[i];
-			var x = object.position[0];
-			var y = object.position[1];
+			var x = object.position[0]/zoom;
+			var y = object.position[1]/zoom;
 			if (object.type == "rectangle"){
 				context.save(); 
 				if (object.angle != 0){
-					context.translate(object.position[0] + object.params[0]/2, object.position[1] + object.params[1]/2);
+					context.translate((object.position[0] + object.params[0]/2)/zoom, (object.position[1] + object.params[1]/2)/zoom);
 					context.rotate(object.angle * Math.PI / 180);
-					context.rect(0 - object.params[0]/2,0 - object.params[1]/2,object.params[0],object.params[1]);
+					context.rect((0 - object.params[0]/2)/zoom,(0 - object.params[1]/2)/zoom,object.params[0]/zoom,object.params[1]/zoom);
 				} else {
-					context.rect(object.position[0],object.position[1],object.params[0],object.params[1]);
+					context.rect(x,y,object.params[0]/zoom,object.params[1]/zoom);
 				}
 				context.restore();
 			}
 			if (object.type == "ellipse"){
-				var r = object.params[0];
-				var wX = object.params[1];
-				var wY = object.params[2];
+				var r = object.params[0]/zoom;
+				var wX = object.params[1]/zoom;
+				var wY = object.params[2]/zoom;
 				var angle = object.angle;
 				context.beginPath();
 				context.ellipse(x,y,r*wX,r*wY,angle * Math.PI / 180,0,2 * Math.PI);
 			}
 			if (object.type == "complexe"){
 				context.beginPath();
-				context.moveTo(object.params[0][0],object.params[0][1]);
+				context.moveTo(object.params[0][0]/zoom,object.params[0][1]/zoom);
 				for(j=1; j<object.params.length; j++){
-					context.lineTo(object.params[j][0],object.params[j][1]);
+					context.lineTo(object.params[j][0]/zoom,object.params[j][1]/zoom);
 				}
-				context.lineTo(object.params[0][0],object.params[0][1]);
+				context.lineTo(object.params[0][0]/zoom,object.params[0][1]/zoom);
 			}
 			context.stroke();
 		}
@@ -66,8 +68,12 @@ function LaunchGame(){
 }
 
 function setMapSize(x , y){
-	canvas.width = x;
-	canvas.height = y;
+	var tmpMapToScreen = x / canvas.width;
+	if (tmpMapToScreen > y / canvas.height){
+		mapToScreen = y / canvas.height;
+	} else {
+		mapToScreen = tmpMapToScreen;
+	}
 }
 
 function StopGame(){

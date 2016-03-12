@@ -2,7 +2,8 @@
 #-*- coding: utf-8 -*
 
 from SimpleWebSocketServer2 import WebSocket, SimpleWebSocketServer2
-from GameBuilder import Player, Game
+from GameBuilder import Game
+from Player import Player, GlobalView
 import ipdb, time, json
 import sys
 import signal
@@ -24,7 +25,7 @@ game = Game()
 
 class SimpleConnexion(WebSocket):
     def handleMessage(self):
-        #ipdb.set_trace()
+        # ipdb.set_trace()
         address = self.address
         player = game.getPlayerByAddress(address[0],address[1])
         message = self.data.encode('ascii', 'replace').split('//')
@@ -32,17 +33,27 @@ class SimpleConnexion(WebSocket):
         if message[0] == 'angle' : 
           #ipdb.set_trace(frame=None)
           player.angle = message[1]
-        if message[0] == 'connected' :
-          print self.address, 'connection client'
-          player.client.sendMessage(unicode(json.dumps(game.getMapSize())))
-        if message[0] == 'globalView' :
-          player.isGlobalView = True
+        try :
+          if message[0] == 'connected' :
+            print self.address, 'connection client'
+            player.client.sendMessage(unicode(json.dumps(game.getClientInfo(self.address[1]))))
+            if message [1] == 'screenSize' :
+              player.setScreenSize(message[2],message[3])
+              if message[4] == 'globalView' :
+                game.setPlayerToGlobalView(address)
+                # newPlayer = Player(self)
+                # game.append(newPlayer)
+              # if message[4] == 'player' :
+        except IndexError :
+          pass
+        #if message[0] == 'globalView' :
+          #player.isGlobalView = True
           #ipdb.set_trace(frame=None)
           #player.client.sendMessage(unicode(json.dumps(game.getMapSize())))
           #print 'globalView'       
-
+    
     def handleConnected(self):
-       #ipdb.set_trace()
+       # ipdb.set_trace()
        servermaxwait[0] = servermaxwaitafterconnexion
        newPlayer = Player(self)
        game.append(newPlayer)
@@ -86,7 +97,7 @@ def serverStep(server, stepNumber):
    players = game.getPlayerList()
 
    for client in clients:
-      client.sendMessage(game.getJsonObjects())
+      client.sendMessage(game.getJsonObjects(client.address))
    return time.time() - timeStep
 
 

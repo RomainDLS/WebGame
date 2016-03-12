@@ -18,25 +18,32 @@ class Object(object):
 		self._id = objectId
 		self._shape = shape
 
-	def getJsonObject(self):
+	def getJsonObject(self, stepX = 0, stepY = 0):
 		jsonObject = {}
 		jsonObject['name'] = self._name
-		jsonObject['position'] = (self._shape.x,self._shape.y)
+		jsonObject['id'] = self._id
+		jsonObject['position'] = (self._shape.x - stepX, self._shape.y - stepY)
 		#ipdb.set_trace()
 		# Object is rectangle
 		if type(self._shape) is Rectangle:
 			jsonObject['angle'] = self._shape.angle
 			jsonObject['type'] = "rectangle"
-			jsonObject['params'] = (self._shape.width,self._shape.height)
+			jsonObject['params'] = (self._shape.width, self._shape.height)
 		# Object is ellispe
 		elif type(self._shape) is Ellipse or type(self._shape) is Circle:
 			jsonObject['angle'] = self._shape.angle
 			jsonObject['type'] = "ellipse"
-			jsonObject['params'] = (self._shape.r,self._shape.wX,self._shape.wY)
+			jsonObject['params'] = (self._shape.r, self._shape.wX, self._shape.wY)
 		# Object is a complexe shape
 		else :
 			jsonObject['type'] = "complexe"
-			jsonObject['params'] = self._shape.linkedPoints
+			# ipdb.set_trace(frame=None)
+			shapeTmp = self._shape
+			xTmp = self._shape.x
+			yTmp = self._shape.y
+			shapeTmp.setPosition(self._shape.x - stepX, self._shape.y - stepY)
+			jsonObject['params'] = list(shapeTmp.linkedPoints)
+			shapeTmp.setPosition(xTmp, yTmp)
 		return jsonObject
 
 	def setPosition(self, x, y):

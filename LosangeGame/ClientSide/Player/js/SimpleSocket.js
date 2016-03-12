@@ -20,7 +20,7 @@ function onOpen(evt)
   console.log("connected\n");
   document.myform.connectButton.disabled = true;
   document.myform.disconnectButton.disabled = false;
-  doSend("connected");
+  doSend("connected//screenSize//" + document.getElementById("canvas").width + "//" + document.getElementById("canvas").height + "//player");
 }
 function onClose(evt)
 {
@@ -32,6 +32,11 @@ function onClose(evt)
 function onMessage(evt)
 {
   objectList = JSON.parse(evt.data);
+  if (objectList.type == "clientInfo"){
+    playerId = objectList.clientId;
+    mapSize.x = objectList.mapX
+    mapSize.y = objectList.mapY
+  }
 }
 function onError(evt)
 {

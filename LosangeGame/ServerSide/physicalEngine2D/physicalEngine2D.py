@@ -36,6 +36,13 @@ class Engine(object):
 		self._objectList[objectId] = (newObject)
 		return newObject
 
+	def deleteObjectById(self, objectId):
+		for key in self._objectList:
+			if self._objectList[key]._id == objectId :
+				toDel = key
+				break
+		del self._objectList[toDel]
+
 	def deleteObject(self, objectId):
 		try:
 			del self._objectList[objectId]

@@ -3,15 +3,19 @@ var mouseY = 0;
 
 var image = new Image();
 var myInterval;
-image.src = "sprites/losange.png";
+var objectList = [];
+var offsetY = 0;
+var offsetX = 0;
+var playerId;
+var mapSize = {x:0, y:0}
 
-var objectList = []
+image.src = "sprites/losange.png";
 
 //window.onload = function() {
 function LaunchGame(){
 	var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
-	
+    var playerPosition = {x:canvas.width, y:canvas.height}
 	canvas.addEventListener('mousemove', function(evt) {
 		var position = getMousePos(canvas, evt);
 		mouseX = position.x;
@@ -30,11 +34,33 @@ function LaunchGame(){
 		context.drawImage(image, 0 - 60/2, 0 - 100/2, 60, 100);
 		context.restore();
 		drawObjects();
+		drawMapBound();
 		sendAngle(angle);
 	}
 
+	 function drawMapBound(){
+		if(playerPosition.x <= canvas.width/2){
+			context.fillStyle="#D1CACA";
+			context.fillRect(0,0,canvas.width/2 - playerPosition.x,canvas.height);
+		}
+		if(playerPosition.y <= canvas.height/2){
+			context.fillStyle="#D1CACA";
+			context.fillRect(0,0,canvas.width,canvas.height/2 - playerPosition.y)
+		}
+		if(mapSize != 0 && (mapSize.x - playerPosition) <= canvas.width/2){
+			context.fillStyle="#D1CACA";
+			context.fillRect(canvas.width/2 + (mapSize.x - playerPosition),0,canvas.width/2,canvas.height)
+		}
+		if(mapSize != 0 && (mapSize.x - playerPosition) <= canvas.width/2){
+			context.fillStyle="#D1CACA";
+			context.fillRect(0,canvas.height/2 + (mapSize.x - playerPosition),canvas.width,canvas.height/2)
+		}
+	 }
+
 	function drawObjects(){
-		for (i=0; i<objectList.length; i++){
+		playerPosition.x = objectList[0].positionX
+		playerPosition.y = objectList[0].positionY
+		for (i=1; i<objectList.length; i++){
 			object = objectList[i];
 			var x = object.position[0];
 			var y = object.position[1];
