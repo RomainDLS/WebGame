@@ -9,6 +9,7 @@
 
 from object import staticObject, dynamicObject, Object
 from map import Map
+from collisionManager import CollisionManager
 from shape import *
 import ipdb
 
@@ -17,18 +18,31 @@ class Engine(object):
 		self._objectList = {}
 		self._objectIdCount = 0
 		self._map = Map(mapSizeX,mapSizeY)
+		self._collisionManager = CollisionManager()
 
 	def engineStep(self):
 		# ipdb.set_trace()
 		self._drawBounds()
+		self._collisionManager.reinitializeLists()
+		i = 0
 		for key in self._objectList:
 			obj = self._objectList[key]
 			if type(obj) is dynamicObject :
 				obj.save()
 				obj.updatePosition()
-				self.collisionDetection(obj)
+				self._collisionManager.collisionDetection(obj, self._objectList, i)
 				# self._objectList[key] = obj.getBackup()
 				# 	ipdb.set_trace(frame=None)
+			i += 1
+
+		newColList = self._collisionManager.newCollisionList
+		endedColList = self._collisionManager.getEndOfCollisions()
+		if newColList :
+			print 'New Collisions : '
+			print newColList
+		if endedColList :
+			print 'End Of Collisions : '
+			print endedColList
 
 	def _drawBounds(self):
 		newBounds = []
@@ -48,23 +62,6 @@ class Engine(object):
 		for bounds in newBounds :
 			self._objectIdCount += 1
 			self.addNewObject(bounds['name'], True, bounds['shape'])
-
-	def collisionDetection(self, objectCible):
-		objectBounds = objectCible.shape.bounds()
-		for key in self._objectList:
-			obj = self._objectList[key]
-			if obj.name.split(':')[0] != 'bounds' and obj != objectCible : 
-				bounds = obj.shape.bounds()
-				check1 = bounds.minX <= objectBounds.maxX <= bounds.maxX
-				check2 = bounds.minX <= objectBounds.minX <= bounds.maxX
-				check3 = bounds.minY <= objectBounds.maxY <= bounds.maxY
-				check4 = bounds.minY <= objectBounds.minY <= bounds.maxY
-				if (check1 or check2) and (check3 or check4) :
-					# ipdb.set_trace(frame=None)
-					print 'probable collision : ' + obj.name + ' - ' + objectCible.name
-
-	# def collisionDetection(self, object1, object2):
-
 
 	def addNewObject(self, objectName, isStatic, shape, objectId=None):
 		if objectId is None :

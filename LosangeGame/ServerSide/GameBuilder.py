@@ -10,15 +10,16 @@ import random
 class Game:
 	def __init__(self):
 		self._playerList = []
-		self._spawnPoints = [(220,100),(200,200)]
+		self._spawnPoints = [(215,100),(100,215)]
+		# self._spawnPoints = [(200,200)]
 		self._gameProcessing = p.Engine(2000,1200)
 		rectangle = self._gameProcessing.addNewObject("rectangle",False,p.Rectangle(50,50,100,100))
+		rectangle.velocity = -1
 		#circle = self._gameProcessing.addNewObject("circle",False, p.Ellipse(100, 100, 10, 1, 2, 0))
 		# cShape = [(110, 100), (103, 119), (92, 112), (92, 88), (103, 81), (109, 92)]
 		# cObj = self._gameProcessing.addNewObject("mistyc", False, p.Shape(cShape))
-		#ipdb.set_trace()
 		# cObj.velocity = 1
-		rectangle.velocity = -1
+		#ipdb.set_trace()
 
 	def setPlayerToGlobalView(self, playerAddress):
 		# ipdb.set_trace(frame=None)
