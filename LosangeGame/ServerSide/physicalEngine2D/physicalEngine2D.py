@@ -22,7 +22,7 @@ class Engine(object):
 
 	def engineStep(self):
 		# ipdb.set_trace()
-		self._drawBounds()
+		# self._drawBounds()
 		self._collisionManager.reinitializeLists()
 		i = 0
 		for key in self._objectList:

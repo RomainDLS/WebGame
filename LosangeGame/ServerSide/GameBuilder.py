@@ -10,8 +10,9 @@ import random
 class Game:
 	def __init__(self):
 		self._playerList = []
-		self._spawnPoints = [(215,100),(100,215)]
-		# self._spawnPoints = [(200,200)]
+		self._spawnPoints = []
+		self._spawnPoints.append((100,215))
+		# self._spawnPoints.append((200,200))
 		self._gameProcessing = p.Engine(2000,1200)
 		rectangle = self._gameProcessing.addNewObject("rectangle",False,p.Rectangle(50,50,100,100))
 		rectangle.velocity = -1
