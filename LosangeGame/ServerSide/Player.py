@@ -9,11 +9,17 @@ class Player:
 		self._isGlobalView = isGlobalView
 		self._addressIp = client.address[0]
 		self._addressClient = client.address[1]
+		self._id = None
 		self._client = client 
 		self._angle = 0
 		self._receivedData = False
 		self._screenSizeX = 0
 		self._screenSizeY = 0
+		self._statut = "alive"
+
+	def click(self):
+		# ipdb.set_trace(frame=None)
+		print "player %d click" %(self._addressClient)
 
 	def setScreenSize(self, screenSizeX, screenSizeY):
 		self._screenSizeX = int(float(screenSizeX))
@@ -21,6 +27,25 @@ class Player:
 
 	def angle(self, angle):
 		self._angle = angle
+
+	def id():
+	    doc = "The id property."
+	    def fget(self):
+	        return self._id
+	    def fset(self, value):
+	    	if self._id is None :
+		        self._id = value
+	    return locals()
+	id = property(**id())
+
+	def statut():
+	    doc = "The statut property."
+	    def fget(self):
+	        return self._statut
+	    def fset(self, value):
+	        self._statut = value
+	    return locals()
+	statut = property(**statut())
 
 	def shapeId():
 	    doc = "The shapeId property."

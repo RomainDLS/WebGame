@@ -12,7 +12,8 @@ from bound import *
 import json
 
 class Object(object):
-	def __init__(self, objectName, objectId, shape):
+	def __init__(self, objectName, objectId, shape, ObjectType=None):
+		self._type = ObjectType
 		self._x = shape.x
 		self._y = shape.y
 		self._name = objectName
@@ -21,7 +22,7 @@ class Object(object):
 		self._isSaved = False
 		self._savedObject = self
 
-	def getJsonObject(self, stepX = 0, stepY = 0):
+	def getJsonObject(self, stepX = 0, stepY = 0, player = None):
 		jsonObject = {}
 		jsonObject['name'] = self._name
 		jsonObject['id'] = self._id
@@ -39,6 +40,8 @@ class Object(object):
 			jsonObject['params'] = (self._shape.r, self._shape.wX, self._shape.wY)
 		# Object is a complexe shape
 		else :
+			if player is not None :
+				jsonObject['statut'] = player.statut
 			jsonObject['type'] = "complexe"
 			# ipdb.set_trace(frame=None)
 			shapeTmp = self._shape
@@ -67,6 +70,15 @@ class Object(object):
 
 	def angle(self, angle):
 		self._shape.angle = angle
+
+	def type():
+	    doc = "The type property."
+	    def fget(self):
+	        return self._type
+	    def fset(self, value):
+	        self._type = value
+	    return locals()
+	type = property(**type())
 
 	def shape():
 	    doc = "The shape property."
@@ -109,17 +121,17 @@ class Object(object):
 	
 
 class staticObject(Object):
-	def __init__(self, objectName, objectId,shape):
-		Object.__init__(self,objectName,objectId,shape)
+	def __init__(self, objectName, objectId, shape, ObjectType=None):
+		Object.__init__(self,objectName,objectId,shape,ObjectType)
 
 class dynamicObject(Object):
-	def __init__(self, objectName, objectId, shape):
+	def __init__(self, objectName, objectId, shape, ObjectType):
 		self._speedX = 0
 		self._speedY = 0
 		self._accelerationX = 0
 		self._accelerationY = 0
 		self._velocity = 0
-		Object.__init__(self,objectName,objectId,shape)
+		Object.__init__(self,objectName,objectId,shape,ObjectType)
 
 	def updatePosition(self):
 		self._x += self._speedX

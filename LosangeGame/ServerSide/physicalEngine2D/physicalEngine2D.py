@@ -14,11 +14,11 @@ from shape import *
 import ipdb
 
 class Engine(object):
-	def __init__(self, mapSizeX, mapSizeY):
+	def __init__(self, mapSizeX, mapSizeY, collisionHandler = None):
 		self._objectList = {}
-		self._objectIdCount = 0
+		self._objectIdCount = 9999
 		self._map = Map(mapSizeX,mapSizeY)
-		self._collisionManager = CollisionManager()
+		self._collisionManager = CollisionManager(collisionHandler)
 
 	def engineStep(self):
 		# ipdb.set_trace()
@@ -30,11 +30,15 @@ class Engine(object):
 			if type(obj) is dynamicObject :
 				obj.save()
 				obj.updatePosition()
-				self._collisionManager.collisionDetection(obj, self._objectList, i)
+				collisionList = self._collisionManager.collisionDetection(obj, self._objectList, i)
+				# for collision in collisionList :
+					# ipdb.set_trace()
 				# self._objectList[key] = obj.getBackup()
 				# 	ipdb.set_trace(frame=None)
 			i += 1
 
+
+	def showCollisions(self):
 		newColList = self._collisionManager.newCollisionList
 		endedColList = self._collisionManager.getEndOfCollisions()
 		if newColList :
@@ -61,16 +65,16 @@ class Engine(object):
 					newBounds.append(newbound)
 		for bounds in newBounds :
 			self._objectIdCount += 1
-			self.addNewObject(bounds['name'], True, bounds['shape'])
+			self.addNewObject(bounds['name'], True, bounds['shape'], "bounds")
 
-	def addNewObject(self, objectName, isStatic, shape, objectId=None):
+	def addNewObject(self, objectName, isStatic, shape, objectId=None, objectType=None):
 		if objectId is None :
 			self._objectIdCount += 1
 			objectId = self._objectIdCount
 		if isStatic :
-			newObject = staticObject(objectName, objectId, shape)
+			newObject = staticObject(objectName, objectId, shape, objectType)
 		else : 
-			newObject = dynamicObject(objectName, objectId, shape)
+			newObject = dynamicObject(objectName, objectId, shape, objectType)
 		self._objectList[objectId] = (newObject)
 		return newObject
 

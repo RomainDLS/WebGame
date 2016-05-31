@@ -13,12 +13,19 @@ from shape import *
 import ipdb
 import math
 
+def CollisionHandlerFunction(object1, object2):
+	"""
+          Called when collision is detected.
+    """
+	pass
+
 class CollisionManager(object):
-	def __init__(self):
+	def __init__(self, CollisionHandler = None):
 		self._collisionList = []
 		self._oldCollisionList = []
 		self._newCollisionList = []
 		self._numberOfCollisions = 0
+		self.collisionHandler = CollisionHandler
 
 	def collisionDetection(self, objectCible, objectList, objectCount):
 		# ipdb.set_trace(frame=None)
@@ -40,7 +47,10 @@ class CollisionManager(object):
 				if (check1 or check2 or check5 or check6) and (check3 or check4 or check7 or check8) :
 					self._numberOfCollisions += 1
 					if self._isCollisioned(obj,objectCible):
-						self._addNewCollision(obj, objectCible)
+						if self.collisionHandler is not None :
+							self.collisionHandler(obj, objectCible)
+						else :
+							self._addNewCollision(obj, objectCible)
 					# ipdb.set_trace(frame=None)
 					# print 'probable collision : ' + obj.name + ' - ' + objectCible.name + " number : " + str(self._numberOfCollisions)
 
@@ -64,9 +74,10 @@ class CollisionManager(object):
 			Overling = self.checkOverlapping(shape1, shape2, normalVector)
 			if not Overling :
 				return False
+		# ipdb.set_trace(frame=None)
 		return True
 
-	# check Overlapping folowing vector 
+	# check Overlapping following vector 
 	def checkOverlapping(self, shape1, shape2, vector):
 		firstValue = self.valueOnSeparatingAxis(shape1[0], shape2[0], vector)
 		mini1 = firstValue

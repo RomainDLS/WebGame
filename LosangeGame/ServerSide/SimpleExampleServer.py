@@ -30,9 +30,12 @@ class SimpleConnexion(WebSocket):
         player = game.getPlayerByAddress(address[0],address[1])
         message = self.data.encode('ascii', 'replace').split('//')
         player.receivedData = True
-        if message[0] == 'angle' : 
-          #ipdb.set_trace(frame=None)
-          player.angle = message[1]
+        if message[0] == 'packet' :
+          packet = json.loads(message[1])
+          # ipdb.set_trace(frame=None)
+          if packet['isClicked'] :
+            player.click()
+          player.angle = float(packet['angle'])
         try :
           if message[0] == 'connected' :
             print self.address, 'connection client'
@@ -60,13 +63,13 @@ class SimpleConnexion(WebSocket):
        print self.address, 'connection server'
 
     def handleClose(self):
-       #ipdb.set_trace()
+       # ipdb.set_trace()
        address = self.address
        game.remove(address[0],address[1])
        print self.address, 'closed'
 
 def playersAllReceivedData():
-   #ipdb.set_trace()
+   # ipdb.set_trace()
    if game.getPlayerList() == [] :
       return True
    for player in game.getPlayerList() :

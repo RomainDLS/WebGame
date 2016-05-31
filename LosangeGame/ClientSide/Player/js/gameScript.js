@@ -7,7 +7,9 @@ var objectList = [];
 var offsetY = 0;
 var offsetX = 0;
 var playerId;
-var mapSize = {x:0, y:0}
+var mapSize = {x:0, y:0};
+var packet = {};
+packet.isClicked = false;
 
 image.src = "sprites/losange.png";
 
@@ -21,10 +23,26 @@ function LaunchGame(){
 		mouseX = position.x;
 		mouseY = position.y;
 	}, false);
+	canvas.addEventListener('click',function(evt){
+		packet.isClicked = true;
+	},false);
 
 
-	myInterval = setInterval(animate, 500/50);
+	myInterval = setInterval(step, 10);
 	
+	function step(){
+		if (typeof(objectList[1]) !== 'undefined'){
+			if (objectList[1].statut == 'alive'){
+				animate();
+			} else if (objectList[1].statut == 'dead') {
+				context.clearRect(0, 0, canvas.width, canvas.height);
+				StopGame();
+			}
+		} else {
+			animate();
+		}
+	}
+
 	function animate(){
 		var angle = getAngle();
 		context.save(); 
@@ -35,10 +53,11 @@ function LaunchGame(){
 		context.restore();
 		drawObjects();
 		drawMapBound();
-		sendAngle(angle);
+		packet.angle = angle*180/Math.PI;
+		sendPacket();
 	}
 
-	 function drawMapBound(){
+	function drawMapBound(){
 		if(playerPosition.x <= canvas.width/2){
 			context.fillStyle="#D1CACA";
 			context.fillRect(0,0,canvas.width/2 - playerPosition.x,canvas.height);
@@ -55,7 +74,7 @@ function LaunchGame(){
 			context.fillStyle="#D1CACA";
 			context.fillRect(0,canvas.height/2 + (mapSize.x - playerPosition),canvas.width,canvas.height/2)
 		}
-	 }
+	}
 
 	function drawObjects(){
 		playerPosition.x = objectList[0].positionX
@@ -99,6 +118,7 @@ function LaunchGame(){
 
 function StopGame(){
 	clearInterval(myInterval);
+	doDisconnect();
 }
 
 function getAngle() {
